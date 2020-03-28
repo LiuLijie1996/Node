@@ -1,0 +1,29 @@
+<!-- 展示所有学生信息 -->
+
+
+<div id="index">
+    <a href="/showAddStu">添加学生</a>
+    <a href="/showRmStu">删除学生</a>
+    <a href="/showUpStu">修改成绩</a>
+    <a href="/showFindStu">查询学生</a>
+
+    <table border="1" width="100%">
+        <tr>
+            <td>姓名</td>
+            <td>性别</td>
+            <td>语文</td>
+            <td>数学</td>
+            <td>英语</td>
+        </tr>
+
+        <% result.forEach(item=>{ %>
+        <tr>
+            <td><%= item.name %></td>
+            <td><%= item.sex %></td>
+            <td><%= item.yuwen %></td>
+            <td><%= item.shuxue %></td>
+            <td><%= item.yingyu %></td>
+        </tr>
+        <% }) %>
+    </table>
+</div>

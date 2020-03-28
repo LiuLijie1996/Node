@@ -1,0 +1,29 @@
+.box{
+    width: 500px;
+    min-height: 300px;
+    margin:100px auto;
+    border:5px solid pink;
+    background-color: skyblue;
+}
+.title{
+    text-align:center;
+}
+
+form{
+    width: 80%;
+    margin:auto;
+}
+form div{
+    margin-top:10px;
+    overflow: hidden;
+}
+form div input{
+    float:right;
+    width: 80%;
+    height: 30px;
+}
+form div button{
+    float:right;
+    padding:10px;
+    background-color: #fff;
+}

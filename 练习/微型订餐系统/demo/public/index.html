@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <div class="box">
+        <h2 class="title">微型订餐系统</h2>
+        <form action="JavaScript:;">
+            <div>
+                <span>用户名：</span>
+                <input type="text" name='phone' id="phone">
+            </div>
+            <div>
+                <span>美食：</span>
+                <input type="text" name="food" id="food">
+            </div>
+            <div>
+                <a href="/all">查看所有订单</a>
+                <button id="btn">点我订餐</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        let phone = document.getElementById('phone');
+        let food = document.getElementById('food');
+        let btn = document.getElementById('btn');
+
+
+        btn.onclick = function () {
+            $.ajax({
+                url: "/dingcan",
+                method: "post",
+                data: {
+                    phone: phone.value.trim(),
+                    food: food.value.trim(),
+                },
+                success: function (res) {
+                    let bool = alert(res.msg)
+                    
+                    if (!bool) {
+                        phone.value = '';
+                        food.value = '';
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

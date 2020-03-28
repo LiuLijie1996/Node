@@ -1,0 +1,39 @@
+姓名: <input type="text" id="name" name="name"> <span class="span"></span> <br>
+性别: <input type="text" id="sex" name="sex"> <span class="span"></span> <br>
+语文: <input type="text" id="yuwen" name="yuwen"> <span class="span"></span> <br>
+数学: <input type="text" id="shuxue" name="shuxue"> <span class="span"></span> <br>
+英语: <input type="text" id="yingyu" name="yingyu"> <span class='span'></span> <br>
+<button id="btn">提交</button>
+<a href="/">返回首页</a>
+
+
+<script>
+    $("#btn").click(function () {
+        let bool = true;
+        let data = {
+            name: $("#name")[0].value.trim() || (bool = fn($('.span')[0], 'name')),
+            sex: $("#sex")[0].value.trim() || (bool = fn($('.span')[1], 'sex')),
+            yuwen: $("#yuwen")[0].value.trim() || (bool = fn($('.span')[2], 'yuwen')),
+            shuxue: $("#shuxue")[0].value.trim() || (bool = fn($('.span')[3], 'shuxue')),
+            yingyu: $("#yingyu")[0].value.trim() || (bool = fn($('.span')[4], 'yingyu')),
+
+        };
+
+        function fn(ele, str) {
+            ele.innerHTML = str + '框不能为空';
+            return false;
+        }
+
+        if (bool === false) return bool;
+
+        //将数据提交到后台
+        $.ajax({
+            url: "/addStu",
+            method: "GET",
+            data: data,
+            success: function (res) {
+                alert(res.msg);
+            }
+        })
+    });
+</script>

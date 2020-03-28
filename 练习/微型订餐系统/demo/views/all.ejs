@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <div class="box">
+        <h2 class="title">所有订单</h2>
+        <ul>
+            <% for(let i=0; i<result.length; i++){ %>
+                <li>
+                    用户：<a href="/all/<%= result[i] %>"> <%= result[i] %> </a> 提交了订单
+                </li>
+            <% } %>
+        </ul>
+    </div>
+</body>
+
+</html>

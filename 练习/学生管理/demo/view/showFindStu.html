@@ -1,0 +1,47 @@
+你要删除的学生是: <input type="text" name="name" id="name">
+<div>
+    <button id="btn">提交</button>
+    <a href="/">返回首页</a>
+</div>
+
+<ul id="oUl">
+
+</ul>
+
+<script>
+    let str = '';
+
+    $("#btn").click(function () {
+        let inpValue = $("#name")[0].value.trim();
+
+        inpValue || alert('name框不能为空');
+
+        if (str === inpValue) return;
+
+        $("#oUl")[0].innerHTML = '';
+
+        $.ajax({
+            url: "/findStu",
+            method: "GET",
+            data: {
+                name: inpValue
+            },
+            success: function (res) {
+                if (res.status === 0) alert(res.msg);
+
+                res.data.forEach(item => {
+                    let li = $(`<li></li>`);
+
+                    for (let key in item) {
+                        let div = $(`<div>${key} : ${item[key]}</div>`);
+                        li.append(div);
+                    }
+
+                    $("#oUl").append(li);
+                });
+
+                str = inpValue;
+            }
+        })
+    })
+</script>

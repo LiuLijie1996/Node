@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<h1>请求潭州图片</h1>
+<button id="btn">点击请求</button>
+
+<div></div>
+
+<script>
+    // 原始链接
+    let link = "https://www.shiguangkey.com/api/courses/getCourseList?pageIndex=1&pageSize=30&cateId=0&token=e2bd6c670630409ebe8a4bcea93370bb&terminalType=4";
+    let pageIndex = 1;//pageIndex 默认从第一页开始
+    let index;
+
+    //格式化查询字符串
+    let options = {};
+    link.split("?")[1].split("&").forEach((item, i) => {
+        options[item.split("=")[0]] = item.split("=")[1];
+        index = i;
+    });
+
+
+    $("#btn").click(function () {
+        //更改页数
+        options.pageIndex = pageIndex;
+
+        //拼接查询字符串
+        let queryStr = "";
+        let i = 0;
+        for (let key in options) {
+            let str = i++ !== index ? '&' : '';
+            queryStr += `${key}=${options[key]}${str}`;
+        }
+
+        //拼接链接
+        let url = `${link.split("?")[0]}?${queryStr}`;
+
+        //改变pageIndex
+        pageIndex += 1;
+
+        $.ajax({
+            url: "/url",
+            method: "GET",
+            data: {
+                url
+            },
+            success: function (res) {
+                res.forEach(item => {
+                    $("div")[0].innerHTML += `<img src=${item}>`;
+                })
+            }
+        })
+    })
+</script>
+</body>
+</html>
