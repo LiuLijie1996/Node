@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/chat.css">
+
+    <!--the css for jquery.mCustomScrollbar-->
+    <link rel="stylesheet" href="/lib/jquery-mCustomScrollbar/css/jquery.mCustomScrollbar.min.css"/>
+    <!--the css for this plugin-->
+    <link rel="stylesheet" href="/lib/jquery-emoji/css/jquery.emoji.css"/>
+
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login">
+    <div class="login_box">
+        <div class="inp">
+            <span>用户名</span>
+            <input type="text" placeholder="请输入用户名">
+        </div>
+
+        <div class="photo">
+            <img src="/images/01.jpg" class="on" width="50" height="50">
+            <img src="/images/02.jpg" class="" width="50" height="50">
+            <img src="/images/03.jpg" class="" width="50" height="50">
+            <img src="/images/04.jpg" class="" width="50" height="50">
+            <img src="/images/05.jpg" class="" width="50" height="50">
+        </div>
+
+        <div class="btn">
+            <button id="login">立即登录</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="chat">
+    <div class="left">
+        <!--用户列表头部-->
+        <div class="header">
+            <img src="/images/01.jpg" alt="">
+            <span class="user_name">小明</span>
+        </div>
+
+        <h3>用户列表</h3>
+        <!--用户列表-->
+        <ul class="user_list">
+            <!--<li class="list">
+                <img src="/images/01.jpg" alt="">
+                <span>小明</span>
+            </li>-->
+        </ul>
+    </div>
+    <div class="right">
+        <h4>聊天室(<span class="user_num" style="vertical-align:middle;"></span>)</h4>
+        <div class="chat_box">
+            <!--<div class="oneself">
+                <div class="user_photo">
+                    <img src="/images/01.jpg" alt="">
+                </div>
+                <div class="content">
+                    我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容
+                </div>
+            </div>
+            <div class="other">
+                <div class="user_photo">
+                    <img src="/images/01.jpg" alt="">
+                </div>
+                <div class="content">
+                    <div class="user_name">
+                        我是小明
+                    </div>
+                    <div class="text">
+                        我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容我是聊天内容
+                    </div>
+                </div>
+            </div>
+            <div class="join">小明加入了群聊</div>
+            <div class="leave">小明离开了群聊</div>-->
+        </div>
+        <div class="inp" id="inp">
+            <div class="icon">
+                <input type="file" id="file">
+                <a href="javascript:;" class="face">表情</a>
+            </div>
+            <div id="edit" contenteditable="true"></div>
+            <!--<textarea id="edit"></textarea>-->
+            <button id="send">发送</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+<!--<script src="/lib/jquery-mCustomScrollbar/script/jquery.mousewheel-3.0.6.min.js"></script>-->
+<script src="/lib/jquery-mCustomScrollbar/script/jquery.mCustomScrollbar.min.js"></script>
+<script src="/lib/jquery-emoji/js/jquery.emoji.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script>
+    //连接socket服务
+    let socket = io("http://localhost:3000");
+    let user_info = {};//用来存储当前用户的信息
+
+    //点击表情
+    $(".face").on("click", function () {
+        //初始化jquery-emoji插件
+        $("#edit").emoji({
+            button: ".face",//设置触发表情的按钮
+            showTab: false,//当只有一组表情时，是否仍然显示Tab。
+            animation: 'slide',//表情面板动画效果，可能的值：'fade':淡入淡出，'slide':滚动，'none':无动画。
+            position: 'topLeft',//表情面板位置
+            icons: [{
+                name: "QQ表情",
+                path: "/lib/jquery-emoji/img/qq/",
+                maxNum: 91,//该组表情文件名的最大数。
+                excludeNums: [41, 45, 54],//要排除的表情文件集合。
+                file: ".gif",
+                placeholder: "#qq_{alias}#"
+            }]
+        });
+    });
+
+
+    //点击头像
+    let preImg = $(".photo img")[0];
+    $(".photo").on("click", function (e) {
+        if (e.target.tagName === "IMG") {
+            preImg.classList.remove("on");//删除类名
+            e.target.classList.add("on");//添加类名
+            preImg = e.target;//记录本次添加类名的元素
+        }
+    });
+
+
+    //点击登录
+    $("#login").on("click", function () {
+        //获取用户名
+        let user_name = $(".inp input").val().trim();
+        if (!user_name) {
+            alert('请输入用户名');
+            return;
+        }
+
+
+        //获取选中的头像
+        let photo_src = $(".photo img.on").attr("src");
+        //需要告诉socket.io服务,请求登录
+        socket.emit('login', {
+            user_name,
+            photo_src
+        });
+
+        //清空输入框
+        $(".inp input").value = "";
+    });
+
+
+    //点击发送消息
+    $("#send").on("click", function () {
+        let content = $("#edit").html().trim();
+        $("#edit").html("");
+
+        let data = {
+            ...user_info,
+            content
+        };
+        //发送消息给服务器
+        socket.emit("sendMessage", data);
+    });
+
+
+    //发送图片功能
+    $("#file").on("change", function () {
+        let file = this.files[0];
+        //需要把这个文件发送到服务器,借助于H5新增的fileReader
+        let fr = new FileReader();
+        fr.readAsDataURL(file);//读取文件
+
+        //读取成功
+        fr.onload = function () {
+            //触发服务器的方法
+            socket.emit('sendImage', {
+                ...user_info,
+                img: fr.result
+            })
+        }
+    });
+
+
+    news();
+
+    function news() {
+        //登录失败
+        socket.on("login_err", function (data) {
+            alert(data.msg)
+        });
+
+        //登录成功
+        socket.on("login_enter", function (data) {
+            //记录本次的登录用户
+            user_info = data.data;
+
+            //隐藏登录窗口
+            $('.login').fadeOut();//淡淡的消失
+
+            //显示聊天窗口
+            $('.chat').fadeIn();//淡淡的显示
+
+            //修改用户信息
+            $(".chat .left .header img").attr("src", data.data.photo_src);
+            $(".chat .left .header .user_name").text(data.data.user_name);
+        });
+
+        //监听用户加入群聊的消息
+        socket.on("addUser", data => {
+            $(".chat .right .chat_box").append(`<div class="join">${data.data.user_name}加入了群聊</div>`);
+
+            scrollIntoView();
+        });
+
+        //监听用户列表的消息
+        socket.on("userList", data => {
+            $(".chat .left .user_list").html("");
+
+            //修改群聊数量
+            $(".chat .right h4 .user_num").html(data.data.length);
+
+            data.data.forEach(user => {
+                $(".chat .left .user_list").append(`
+                <li>
+                    <img src="${user.photo_src}" alt="">
+                    <span>${user.user_name}</span>
+                </li>`
+                );
+            });
+        });
+
+        //监听用户离开的消息
+        socket.on("delUser", data => {
+            $(".chat .right .chat_box").append(`<div class="leave">${data.data.user_name}离开了群聊</div>`);
+
+            scrollIntoView();
+        });
+
+
+        //监听聊天的消息
+        socket.on("receiveMessage", data => {
+            console.log(data);
+            //判断是自己发的消息还是别人发的消息
+            if (data.user_name === user_info.user_name) {//自己发的消息
+                let html = `
+                <div class="oneself">
+                    <div class="user_photo">
+                        <img src="${data.photo_src}" alt="">
+                    </div>
+                    <div class="content">
+                        ${data.content}
+                    </div>
+                </div>`;
+
+                $('.chat .right .chat_box').append(html);
+            } else {
+                //别人发的消息
+
+                let html = `
+                <div class="other">
+                    <div class="user_photo">
+                        <img src="${data.photo_src}" alt="">
+                    </div>
+                    <div class="content">
+                        <div class="user_name">
+                            ${data.user_name}
+                        </div>
+                        <div class="text">
+                            ${data.content}
+                        </div>
+                    </div>
+                </div>`;
+
+                $('.chat .right .chat_box').append(html);
+            }
+
+            scrollIntoView();
+        });
+
+
+        //监听图片聊天信息
+        socket.on("receiveImage", data => {
+            console.log(data);
+
+            //判断是自己发的消息还是别人发的消息
+            if (data.user_name === user_info.user_name) {//自己发的消息
+                let html = `
+                <div class="oneself">
+                    <div class="user_photo">
+                        <img src="${data.photo_src}" alt="">
+                    </div>
+                    <div class="content">
+                        <img src="${data.img}" alt="">
+                    </div>
+                </div>`;
+
+                $('.chat .right .chat_box').append(html);
+            } else {
+                //别人发的消息
+
+                let html = `
+                <div class="other">
+                    <div class="user_photo">
+                        <img src="${data.photo_src}" alt="">
+                    </div>
+                    <div class="content">
+                        <div class="user_name">
+                            ${data.user_name}
+                        </div>
+                        <div class="text">
+                            <img src="${data.img}" alt="">
+                        </div>
+                    </div>
+                </div>`;
+
+                $('.chat .right .chat_box').append(html);
+            }
+
+            //等待图片加载完成,在滚动到底部
+            $('.chat .right .chat_box img:last').on("load", function () {
+                scrollIntoView();
+            })
+        })
+    }
+
+
+    function scrollIntoView() {
+        //让chat_box元素滚动到最底部
+        $('.chat .right .chat_box')
+            .children(":last")
+            .get(0)
+            .scrollIntoView(false);
+    }
+
+</script>
+</body>
+</html>
